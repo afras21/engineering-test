@@ -57,49 +57,9 @@ export const HomeBoardPage: React.FC = () => {
       alert("Completed")
     }
   }
-  // /**
-  //  * @todo
-  //  * MOve to utils
-  //  */
-  // function merge(left: any, right: any) {
-  //   let arr = []
-  //   while (left.length && right.length) {
-  //     if (left[0].first_name < right[0]?.first_name) {
-  //       arr.push(left.shift())
-  //     } else {
-  //       arr.push(right.shift())
-  //     }
-  //   }
-  //   return [...arr, ...left, ...right]
-  // }
-  // function mergeSort(array: any): any {
 
-  //   const half = array.length / 2
-
-  //   // Base case or terminating case
-  //   if (array.length < 2) {
-  //     return array
-  //   }
-
-  //   const left = array.splice(0, half)
-  //   return merge(mergeSort(left), mergeSort(array))
-  // }
-
-  /**
-   * @todo
-   * Add helper for lowercase
-   */
   const onInputChange = (e: any) => {
-    var filterPayload: any = data?.students
-
     setSearchKey(e);
-
-    filterPayload = filterPayload.filter((element: any) => {
-      const { first_name, last_name } = element
-      return first_name.toLowerCase().includes(e.toLowerCase()) || last_name.toLowerCase().includes(e.toLowerCase())
-
-    });
-
   }
   const rollData = [
     { type: "all", count: data?.students.length || sortedInfo.length },
@@ -163,13 +123,12 @@ export const HomeBoardPage: React.FC = () => {
   }
 
 
+
   var updatedPayload: any = [];
   var allData: any = [];
   if (loadState === "loaded") {
     updatedPayload = sortedInfo.length > 0 ? sortedInfo : data?.students || [];
     allData = updatedPayload;
-
-
 
     if (searchKey.length > 0) {
       updatedPayload = updatedPayload.filter((element: any) => {
@@ -178,11 +137,28 @@ export const HomeBoardPage: React.FC = () => {
         return name.includes(searchKey.toLowerCase())
       });
     }
+  
     if (roleFilter.length > 0) {
       updatedPayload = (roleFilter === "present") ? attendance?.present : (roleFilter === "absent") ? attendance?.absent
         : (roleFilter === "late") ? attendance.late : updatedPayload
     }
 
+  }
+  /**
+   * Filtering students based on role
+   */
+  const getFilteredRole = (roleState: String, attendance: any) => {
+    switch (roleState) {
+      case 'present':
+        return attendance.present
+      case 'late':
+        return attendance.late
+      case 'absent':
+        return attendance.absent
+
+      default:
+        return false
+    }
   }
 
   return (
@@ -198,7 +174,7 @@ export const HomeBoardPage: React.FC = () => {
         {loadState === "loaded" && data?.students && (
           <>
             {
-              updatedPayload.length > 0 ?
+              updatedPayload?.length > 0 ?
                 updatedPayload.map((s: any) => (
                   <StudentListTile rollState={s.attendance} defaultState={defaultAttendanceColor} isRollMode={isRollMode} student={s} onAttendance={(state?: string, student?: Object) => onAttendance(state, student)} />
                 ))
