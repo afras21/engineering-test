@@ -14,13 +14,15 @@ import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active
 export const HomeBoardPage: React.FC = () => {
   const [isRollMode, setIsRollMode] = useState(false)
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
+
   const [isSorted, setSorted] = useState(false)
   const [sortedInfo, setSortedInfo] = useState([])
   const [searchKey, setSearchKey] = useState('');
+
   const [filteredData, setFilteredData] = useState(sortedInfo || data?.students)
   const [roleFilter, setRoleFilter] = useState("");
+
   const [attendance, setAttendance] = useState({
-    // all: data?.students,
     present: [],
     late: [],
     absent: [],
@@ -37,13 +39,9 @@ export const HomeBoardPage: React.FC = () => {
       setIsRollMode(true)
     } else if (action === "sort" && loadState === "loaded") {
       const payload = (sortedInfo && sortedInfo.length > 0) ? sortedInfo : data?.students
-      // console.log('-------_SORTED_INFO-------', sortedInfo?.length || 0)
-      // console.log('-------DATA.STUDENTS-------', data?.students?.length || 0)
-      // console.log('SORT_PAYLOAD', payload)
       const sortedData = isSorted ? sortedInfo.reverse() : mergeSort(payload)
       setSortedInfo(sortedData)
       setSorted(!isSorted)
-      // console.log('------------IS_SORTED---------', isSorted)
     }
   }
 
@@ -72,7 +70,6 @@ export const HomeBoardPage: React.FC = () => {
         arr.push(right.shift())
       }
     }
-    // console.log("Final=====", [...arr, ...left, ...right])
     return [...arr, ...left, ...right]
   }
   function mergeSort(array: any): any {
@@ -97,15 +94,12 @@ export const HomeBoardPage: React.FC = () => {
 
     setSearchKey(e);
 
-    console.log('----------_FILTER PAYLOAD----------', data?.students)
     filterPayload = filterPayload.filter((element: any) => {
       const { first_name, last_name } = element
       return first_name.toLowerCase().includes(e.toLowerCase()) || last_name.toLowerCase().includes(e.toLowerCase())
 
     });
 
-    // setSortedInfo(filterPayload)
-    console.log('-----__FILTERED ARRAY_______', filterPayload)
   }
   const rollData = [
     { type: "all", count: data?.students.length || sortedInfo.length },
@@ -123,13 +117,11 @@ export const HomeBoardPage: React.FC = () => {
     }, {})
   }
   const onAttendance = (state?: string, student?: any) => {
-    console.log(state, student)
     var allStudentData = data?.students || student
     var tempFilter: any = []
     if (filteredData.length === 0) {
       tempFilter.push({ ...student, attendance: state })
       allStudentData && allStudentData.map((students: any) => {
-        console.log(students.id,'-------', student.id)
         if(students.id === student.id) {
           return students["attendance"] = state;
         }
@@ -140,14 +132,12 @@ export const HomeBoardPage: React.FC = () => {
       tempFilter = [...tempFilter, { ...student, attendance: state }]
 
       allStudentData && allStudentData.map((students: any) => {
-        console.log(students.id,'-------', student.id)
         if(students.id === student.id) {
           return students["attendance"] = state;
         }
       });
     }
     allStudentData.length > 0 && setSortedInfo(allStudentData)
-    console.log('---------SORTEDINFO_______', allStudentData)
 
     
      setFilteredData(tempFilter)
@@ -181,7 +171,6 @@ export const HomeBoardPage: React.FC = () => {
 
   var updatedPayload: any = [];
   var allData: any = [];
-  console.log('---------ATTENDANCE--------', attendance)
   if (loadState === "loaded") {
     updatedPayload = sortedInfo.length > 0 ? sortedInfo : data?.students || [];
     allData = updatedPayload;
@@ -200,8 +189,6 @@ export const HomeBoardPage: React.FC = () => {
                         : (roleFilter === "late") ? attendance.late : updatedPayload
     }
 
-    console.log('---------UPDATED PAYLOAD-------', updatedPayload)
-    console.log('-----ALLDTA---', allData)
   }
 
   return (
