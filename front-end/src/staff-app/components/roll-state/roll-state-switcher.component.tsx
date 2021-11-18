@@ -9,7 +9,6 @@ interface Props {
   onStateChange?: (newState: RolllStateType) => void
 }
 export const RollStateSwitcher: React.FC<Props> = ({ defaultState, size = 40, onStateChange }) => {
-  // console.log("IM  DEFAULT -----",defaultState)
   const [rollState, setRollState] = useState(defaultState)
 
 

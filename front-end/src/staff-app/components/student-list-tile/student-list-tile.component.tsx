@@ -15,9 +15,6 @@ interface Props {
 }
 export const StudentListTile: React.FC<Props> = ({ isRollMode, student, onAttendance, defaultState, rollState}) => {
   const stateColor = rollState === undefined ? defaultState : rollState
-  // console.log('-------STATUS------', stateColor)
-
-  console.log(`--------__DEFAULT ${defaultState} vs ROLE state ${rollState}` )
   return (
     <S.Container>
       <S.Avatar url={Images.avatar}></S.Avatar>
