@@ -4,11 +4,14 @@ import { RollStateIcon } from "staff-app/components/roll-state/roll-state-icon.c
 
 interface Props {
   initialState?: RolllStateType
-  size?: number
+  size?: number,
+  defaultState: RolllStateType,
   onStateChange?: (newState: RolllStateType) => void
 }
-export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", size = 40, onStateChange }) => {
-  const [rollState, setRollState] = useState(initialState)
+export const RollStateSwitcher: React.FC<Props> = ({ defaultState, size = 40, onStateChange }) => {
+  // console.log("IM  DEFAULT -----",defaultState)
+  const [rollState, setRollState] = useState(defaultState)
+
 
   const nextState = () => {
     const states: RolllStateType[] = ["present", "late", "absent"]
@@ -24,6 +27,6 @@ export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", si
       onStateChange(next)
     }
   }
-
-  return <RollStateIcon type={rollState} size={size} onClick={onClick} />
+  const stateColor = defaultState !== "unmark" ? defaultState : rollState
+  return <RollStateIcon type={stateColor} size={size} onClick={onClick} />
 }

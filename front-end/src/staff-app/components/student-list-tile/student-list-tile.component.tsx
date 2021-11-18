@@ -9,8 +9,15 @@ import { RollStateSwitcher } from "staff-app/components/roll-state/roll-state-sw
 interface Props {
   isRollMode?: boolean
   student: Person
+  defaultState: any,
+  rollState: String,
+  onAttendance: (state?: string, student?: Object) => void
 }
-export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
+export const StudentListTile: React.FC<Props> = ({ isRollMode, student, onAttendance, defaultState, rollState}) => {
+  const stateColor = rollState === undefined ? defaultState : rollState
+  // console.log('-------STATUS------', stateColor)
+
+  console.log(`--------__DEFAULT ${defaultState} vs ROLE state ${rollState}` )
   return (
     <S.Container>
       <S.Avatar url={Images.avatar}></S.Avatar>
@@ -19,7 +26,7 @@ export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
       </S.Content>
       {isRollMode && (
         <S.Roll>
-          <RollStateSwitcher />
+          <RollStateSwitcher defaultState={stateColor} onStateChange={(value)=>onAttendance(value, student)} />
         </S.Roll>
       )}
     </S.Container>
