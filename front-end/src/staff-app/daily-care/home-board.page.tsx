@@ -10,7 +10,7 @@ import { Person } from "shared/models/person"
 import { useApi } from "shared/hooks/use-api"
 import { StudentListTile } from "staff-app/components/student-list-tile/student-list-tile.component"
 import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active-roll-overlay/active-roll-overlay.component"
-
+import { mergeSort } from "../../shared/helpers/sorting"
 export const HomeBoardPage: React.FC = () => {
   const [isRollMode, setIsRollMode] = useState(false)
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
@@ -57,33 +57,33 @@ export const HomeBoardPage: React.FC = () => {
       alert("Completed")
     }
   }
-  /**
-   * @todo
-   * MOve to utils
-   */
-  function merge(left: any, right: any) {
-    let arr = []
-    while (left.length && right.length) {
-      if (left[0].first_name < right[0]?.first_name) {
-        arr.push(left.shift())
-      } else {
-        arr.push(right.shift())
-      }
-    }
-    return [...arr, ...left, ...right]
-  }
-  function mergeSort(array: any): any {
+  // /**
+  //  * @todo
+  //  * MOve to utils
+  //  */
+  // function merge(left: any, right: any) {
+  //   let arr = []
+  //   while (left.length && right.length) {
+  //     if (left[0].first_name < right[0]?.first_name) {
+  //       arr.push(left.shift())
+  //     } else {
+  //       arr.push(right.shift())
+  //     }
+  //   }
+  //   return [...arr, ...left, ...right]
+  // }
+  // function mergeSort(array: any): any {
 
-    const half = array.length / 2
+  //   const half = array.length / 2
 
-    // Base case or terminating case
-    if (array.length < 2) {
-      return array
-    }
+  //   // Base case or terminating case
+  //   if (array.length < 2) {
+  //     return array
+  //   }
 
-    const left = array.splice(0, half)
-    return merge(mergeSort(left), mergeSort(array))
-  }
+  //   const left = array.splice(0, half)
+  //   return merge(mergeSort(left), mergeSort(array))
+  // }
 
   /**
    * @todo
@@ -121,22 +121,16 @@ export const HomeBoardPage: React.FC = () => {
     var tempFilter: any = []
     if (filteredData.length === 0) {
       tempFilter.push({ ...student, attendance: state })
-      allStudentData && allStudentData.map((students: any) => {
-        if(students.id === student.id) {
-          return students["attendance"] = state;
-        }
-      });
-    } else {
-    
+    } else {   
       tempFilter = filteredData.filter((e: any) => e?.id !== student?.id)
       tempFilter = [...tempFilter, { ...student, attendance: state }]
-
-      allStudentData && allStudentData.map((students: any) => {
-        if(students.id === student.id) {
-          return students["attendance"] = state;
-        }
-      });
     }
+    allStudentData && allStudentData.map((students: any) => {
+      if (students.id === student.id) {
+        return students["attendance"] = state;
+      }
+    });
+
     allStudentData.length > 0 && setSortedInfo(allStudentData)
 
     
@@ -184,9 +178,9 @@ export const HomeBoardPage: React.FC = () => {
         return name.includes(searchKey.toLowerCase())
       });
     }
-    if(roleFilter.length > 0) {
-      updatedPayload = (roleFilter === "present") ? attendance?.present : (roleFilter === "absent") ? attendance?.absent 
-                        : (roleFilter === "late") ? attendance.late : updatedPayload
+    if (roleFilter.length > 0) {
+      updatedPayload = (roleFilter === "present") ? attendance?.present : (roleFilter === "absent") ? attendance?.absent
+        : (roleFilter === "late") ? attendance.late : updatedPayload
     }
 
   }
